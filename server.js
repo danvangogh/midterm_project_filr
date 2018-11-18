@@ -13,6 +13,7 @@ const knexConfig  = require("./knexfile");
 const knex        = require("knex")(knexConfig[ENV]);
 const morgan      = require('morgan');
 const knexLogger  = require('knex-logger');
+const cookieParser  = require('cookie-parser');
 
 // Seperated Routes for each Resource
 const usersRoutes = require("./routes/users");
@@ -65,6 +66,7 @@ app.use("/styles", sass({
   outputStyle: 'expanded'
 }));
 app.use(express.static("public"));
+app.use(cookieParser());
 
 // Mount all resource routes
 app.use("/api/users", usersRoutes(knex));
@@ -127,13 +129,13 @@ app.post("/login", (req, res) => {
 });
 
 // Submit Resource
-app.post("/submit", (req, res) => {
-  const resourceURL = req.body.urlLink;
-  const title = req.body.title;
-  const description = req.body.description;
-  // Use knex integrations to access database
-  res.redirect("/");
-});
+// app.post("/submit", (req, res) => {
+//   const resourceURL = req.body.urlLink;
+//   const title = req.body.title;
+//   const description = req.body.description;
+//   // Use knex integrations to access database
+//   res.redirect("/");
+// });
 
 // Like Resource
 app.post("/like", (req, res) => {

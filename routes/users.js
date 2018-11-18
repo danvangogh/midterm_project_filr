@@ -1,10 +1,16 @@
 "use strict";
 
-const express = require('express');
-const router  = express.Router();
-const cookie = require('cookie-parser');
+const express       = require('express');
+const router        = express.Router();
+const cookieParser  = require('cookie-parser');
+const app           = express();
 
 module.exports = (knex) => {
+app.use(cookieParser());
+
+app.get('/', function(req, res){
+   res.cookie('name', 'express').send('cookie set'); //Sets name = express
+});
 
   // router.get("/", (req, res) => {
   //   knex
@@ -38,12 +44,22 @@ module.exports = (knex) => {
     res.redirect("/");
   })
 
-// SUBMIT A NEW POST ROUTE
+  // LOGOUT USER
+    router.post("/logout", (req, res) => {
+      res.clearCookie('username');
+      res.redirect("/register");
+    })
+
+    // SUBMIT A NEW POST ROUTE
   router.post("/submit", (req, res) => {
+
     const title = req.body.title;
     const description = req.body.description;
     const resourceURL = req.body.resourceURL;
     const imageURL = req.body.imageURL;
+    console.log("req.cookies = ", req.cookies);
+
+    // console.log("req.cookies = ", req.cookies[username])
     knex('resources')
       .insert({
         resourceURL: resourceURL,
@@ -56,11 +72,6 @@ module.exports = (knex) => {
       });
   })
 
-  // LOGOUT USER
-    router.post("/logout", (req, res) => {
-      res.clearCookie('username');
-      res.redirect("/register");
-    })
 
 // COMMENT ROUTE
   // router.post("comment", (req, res) => {
